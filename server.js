@@ -3,11 +3,11 @@ const httpProxy = require('http-proxy');
 const zlib = require('zlib');
 
 const TARGET_DOMAIN = process.env.TARGET_DOMAIN || 'https://elpais.com';
-const proxyBaseUrl = `https://pais.samengal.xyz`;
+const PROXY_BASE_URL = process.env.PROXY_BASE_URL;
 const PORT = process.env.PORT;
 
-if (!PORT) {
-  throw new Error('PORT environment variable is required');
+if (!PORT || !PROXY_BASE_URL) {
+  throw new Error('PORT and PROXY_BASE_URL environment variables are required.');
 }
 
 const proxy = httpProxy.createProxyServer({
@@ -49,7 +49,7 @@ function handleResponse(body, proxyRes, req, res) {
   ) {
 
     body = body
-      .replace(/https:\/\/elpais\.com/g, proxyBaseUrl)
+      .replace(/https:\/\/elpais\.com/g, PROXY_BASE_URL)
       .replace(
         /<script[^>]*src="https:\/\/static\.elpais\.com\/dist\/resources\/js\/[^"]*\/ENP-article\.js"[^>]*><\/script>/g,
         ''
